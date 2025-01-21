@@ -5,8 +5,7 @@ buildscript {
     }
     dependencies {
         // Ensure you use a compatible version of AGP with your Gradle version
-        classpath 'com.android.tools.build:gradle:8.0.2' // Update as needed
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21' // If using Kotlin
+        classpath 'com.android.tools.build:gradle:8.3' // Update as needed
     }
 }
 
