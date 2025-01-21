@@ -1,18 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPage extends StatefulWidget {
+  const VideoPage({super.key});
+
   @override
   _VideoPageState createState() => _VideoPageState();
 }
 
 class _VideoPageState extends State<VideoPage> {
-  final List<String> externalVideos = [
-    'https://videos.pexels.com/video-files/4057322/4057322-sd_506_960_25fps.mp4',
-    'https://videos.pexels.com/video-files/4058084/4058084-sd_506_960_25fps.mp4',
-    'https://videos.pexels.com/video-files/3959544/3959544-sd_506_960_25fps.mp4',
-    'https://videos.pexels.com/video-files/4038571/4038571-sd_506_960_25fps.mp4',
-    'https://videos.pexels.com/video-files/5595352/5595352-sd_360_640_24fps.mp4',
+  final List<Map<String, String>> externalVideos = [
+    {
+      'url':
+          'http://videos.pexels.com/video-files/4057322/4057322-sd_506_960_25fps.mp4',
+      'text':
+          'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
+    },
+    {
+      'url':
+          'http://videos.pexels.com/video-files/4058084/4058084-sd_506_960_25fps.mp4',
+      'text':
+          'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
+    },
+    {
+      'url':
+          'http://videos.pexels.com/video-files/3959544/3959544-sd_506_960_25fps.mp4',
+      'text':
+          'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
+    },
+    {
+      'url':
+          'http://videos.pexels.com/video-files/4038571/4038571-sd_506_960_25fps.mp4',
+      'text':
+          'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
+    },
+    {
+      'url':
+          'http://videos.pexels.com/video-files/5595352/5595352-sd_360_640_24fps.mp4',
+      'text':
+          'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
+    },
   ];
 
   @override
@@ -27,13 +55,16 @@ class _VideoPageState extends State<VideoPage> {
           children: [
             Text("LIVE", style: TextStyle(color: Colors.grey, fontSize: 16)),
             SizedBox(width: 16),
-            Text("Following", style: TextStyle(color: Colors.grey, fontSize: 16)),
+            Text("Following",
+                style: TextStyle(color: Colors.grey, fontSize: 16)),
             SizedBox(width: 16),
             Column(
               children: [
                 Text("For You",
                     style: TextStyle(
-                        color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold)),
                 Container(
                   height: 2,
                   width: 20,
@@ -56,7 +87,9 @@ class _VideoPageState extends State<VideoPage> {
         scrollDirection: Axis.vertical,
         itemCount: externalVideos.length,
         itemBuilder: (context, index) {
-          return VideoCard(videoUrl: externalVideos[index]);
+          return VideoCard(
+              videoUrl: externalVideos[index]['url']!,
+              text: externalVideos[index]['text']!);
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -79,7 +112,8 @@ class _VideoPageState extends State<VideoPage> {
                 child: Icon(Icons.add, color: Colors.white),
               ),
               label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "Notifications"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications), label: "Notifications"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
@@ -89,8 +123,9 @@ class _VideoPageState extends State<VideoPage> {
 
 class VideoCard extends StatefulWidget {
   final String videoUrl;
+  final String text; // Add text property
 
-  VideoCard({required this.videoUrl});
+  VideoCard({required this.videoUrl, required this.text});
 
   @override
   _VideoCardState createState() => _VideoCardState();
@@ -100,18 +135,21 @@ class _VideoCardState extends State<VideoCard> {
   late VideoPlayerController _controller;
   bool _isPlaying = true;
   bool _showHeart = false; // Flag for showing the heart animation
-  int _likeCount = 1200;   // Initial like count
+  int _likeCount = 1200; // Initial like count
   bool _showDropdown = false; // Dropdown visibility toggle
+
+  bool isExpanded = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl) // Changed to `network`
-      ..initialize().then((_) {
-        setState(() {
-          _controller.play();
-        });
-      });
+    _controller =
+        VideoPlayerController.network(widget.videoUrl) // Changed to `network`
+          ..initialize().then((_) {
+            setState(() {
+              _controller.play();
+            });
+          });
   }
 
   @override
@@ -137,6 +175,9 @@ class _VideoCardState extends State<VideoCard> {
 
   @override
   Widget build(BuildContext context) {
+    // Limit for collapsed text
+    const int textLimit = 40;
+
     return Stack(
       children: [
         GestureDetector(
@@ -167,18 +208,51 @@ class _VideoCardState extends State<VideoCard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CircleAvatar(backgroundColor: Colors.white, radius: 20),
-                SizedBox(height: 8),
-                Icon(Icons.favorite, color: Colors.red),
-                Text("$_likeCount", style: TextStyle(color: Colors.white)), // Updated like count
-                SizedBox(height: 8),
-                Icon(Icons.chat, color: Colors.white),
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/images/image.jpeg',
+                      fit: BoxFit.cover,
+                      width: 100,
+                      height: 100,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Icon(
+                  Icons.favorite_outline,
+                  color: Colors.white,
+                  size: 40,
+                ),
+                Text("$_likeCount",
+                    style:
+                        TextStyle(color: Colors.white)), // Updated like count
+                SizedBox(height: 20),
+                Icon(
+                  Icons.chat_outlined,
+                  color: Colors.white,
+                  size: 40,
+                ),
                 Text("17", style: TextStyle(color: Colors.white)),
-                SizedBox(height: 8),
-                Icon(Icons.bookmark, color: Colors.white),
+                SizedBox(height: 20),
+                Icon(
+                  Icons.bookmark_outline,
+                  color: Colors.white,
+                  size: 40,
+                ),
                 Text("12", style: TextStyle(color: Colors.white)),
-                SizedBox(height: 8),
-                Icon(Icons.share, color: Colors.white),
+                SizedBox(height: 20),
+                Icon(
+                  Icons.share_outlined,
+                  color: Colors.white,
+                  size: 40,
+                ),
                 Text("24", style: TextStyle(color: Colors.white)),
               ],
             ),
@@ -199,23 +273,45 @@ class _VideoCardState extends State<VideoCard> {
                       _showDropdown = !_showDropdown;
                     });
                   },
-                  child: Row(
-                    children: [
-                      Icon(Icons.shop, color: Colors.white),
-                      SizedBox(width: 4),
-                      Text("Shop", style: TextStyle(color: Colors.white)),
-                      SizedBox(width: 4),
-                      Container(
-                        width: 4,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF1A1A1A), // Dot background color
-                          shape: BoxShape.circle,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF1A1A1A), // Background color
+                      borderRadius:
+                          BorderRadius.circular(12), // Rounded background
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6), // Padding inside the container
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min, // Wrap content
+                      children: [
+                        Icon(Icons.storefront,
+                            color: Colors.white), // Shop icon
+                        SizedBox(width: 4),
+                        Text("Shop",
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                            )),
+                        SizedBox(width: 4),
+                        Container(
+                          width: 4,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFffffff), // Dot background color
+                            shape: BoxShape.circle,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 4),
-                      Text("4", style: TextStyle(color: Colors.white)),
-                    ],
+                        SizedBox(width: 4),
+                        Text("4",
+                            style: GoogleFonts.montserrat(color: Colors.white)),
+                        SizedBox(width: 4),
+                        Icon(
+                          Icons.keyboard_arrow_down, // Down arrow icon
+                          color: Colors.white,
+                          size: 16, // Adjust size to match design
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 // Dropdown menu
@@ -227,22 +323,175 @@ class _VideoCardState extends State<VideoCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Shop 1", style: TextStyle(color: Colors.white)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min, // Wrap content
+                          children: [
+                            Text("Shop",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.white,
+                                )),
+                            SizedBox(width: 4),
+                            Container(
+                              width: 4,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color:
+                                    Color(0xFFffffff), // Dot background color
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Text("1",
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white)),
+                          ],
+                        ),
                         SizedBox(height: 4),
-                        Text("Shop 2", style: TextStyle(color: Colors.white)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min, // Wrap content
+                          children: [
+                            Text("Shop",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.white,
+                                )),
+                            SizedBox(width: 4),
+                            Container(
+                              width: 4,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color:
+                                    Color(0xFFffffff), // Dot background color
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Text("2",
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white)),
+                          ],
+                        ),
                         SizedBox(height: 4),
-                        Text("Shop 3", style: TextStyle(color: Colors.white)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min, // Wrap content
+                          children: [
+                            Text("Shop",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.white,
+                                )),
+                            SizedBox(width: 4),
+                            Container(
+                              width: 4,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color:
+                                    Color(0xFFffffff), // Dot background color
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Text("3",
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white)),
+                          ],
+                        ),
                         SizedBox(height: 4),
-                        Text("Shop 4", style: TextStyle(color: Colors.white)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min, // Wrap content
+                          children: [
+                            Text("Shop",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.white,
+                                )),
+                            SizedBox(width: 4),
+                            Container(
+                              width: 4,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color:
+                                    Color(0xFFffffff), // Dot background color
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Text("4",
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white)),
+                          ],
+                        ),
                         SizedBox(height: 4),
-                        Text("Shop 5", style: TextStyle(color: Colors.white)),
+                        Row(
+                          mainAxisSize: MainAxisSize.min, // Wrap content
+                          children: [
+                            Text("Shop",
+                                style: GoogleFonts.montserrat(
+                                  color: Colors.white,
+                                )),
+                            SizedBox(width: 4),
+                            Container(
+                              width: 4,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color:
+                                    Color(0xFFffffff), // Dot background color
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Text("5",
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white)),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                 SizedBox(height: 8),
-                Text("Username", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                Text("This happens to be a great match...",
-                    style: TextStyle(color: Colors.white)),
+                Text("Username",
+                    style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    )),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              color: Colors.white), // Style for the text
+                          children: [
+                            TextSpan(
+                              text: isExpanded
+                                  ? widget.text // Full text when expanded
+                                  : widget.text.length > textLimit
+                                      ? widget.text.substring(0, textLimit) +
+                                          "..." // Truncated text
+                                      : widget
+                                          .text, // Full text if it fits within the limit
+                            ),
+                            if (widget.text.length > textLimit)
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment
+                                    .middle, // Align with text
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      isExpanded =
+                                          !isExpanded; // Toggle expanded state
+                                    });
+                                  },
+                                  child: Text(
+                                    isExpanded ? " see less" : " see more",
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

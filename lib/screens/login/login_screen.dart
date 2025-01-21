@@ -1,3 +1,4 @@
+import 'package:fiixconn_social_app/screens/video_screen/video_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -31,6 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login successful!')),
       );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => VideoPage()));
     }
   }
 
@@ -99,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
-                  hintText: "Enter your username",
+                  hintText: "Enter the username: kaizen_designer",
                   errorText: usernameError, // Shows error if validation fails
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFFD0D5DD)),
@@ -137,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: passwordController,
                 obscureText: !isPasswordVisible, // Toggle visibility
                 decoration: InputDecoration(
-                  hintText: "Enter your password",
+                  hintText: "Enter password: Password@123",
                   errorText: passwordError, // Shows error if validation fails
                   suffixIcon: IconButton(
                     icon: Icon(
