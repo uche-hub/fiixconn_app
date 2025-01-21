@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
@@ -48,7 +49,8 @@ class _VideoPageState extends State<VideoPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: Icon(Icons.menu),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -98,23 +100,28 @@ class _VideoPageState extends State<VideoPage> {
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.apps), label: "Mini Apps"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Messages"),
+          BottomNavigationBarItem(
+              icon: Image.asset("assets/icons/layer.png"), label: "Mini Apps"),
+          BottomNavigationBarItem(
+              icon: Image.asset("assets/icons/chat-1.png"), label: "Messages"),
           BottomNavigationBarItem(
               icon: Container(
                 height: 50,
                 width: 50,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  shape: BoxShape.rectangle,
                   color: Colors.lightBlue,
+                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.blue[900]!, width: 2),
                 ),
                 child: Icon(Icons.add, color: Colors.white),
               ),
               label: ""),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: "Notifications"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+              icon: Image.asset("assets/icons/notification.png"),
+              label: "Notifications"),
+          BottomNavigationBarItem(
+              icon: Image.asset("assets/icons/profile.png"), label: "Profile"),
         ],
       ),
     );
@@ -176,7 +183,7 @@ class _VideoCardState extends State<VideoCard> {
   @override
   Widget build(BuildContext context) {
     // Limit for collapsed text
-    const int textLimit = 40;
+    const int textLimit = 30;
 
     return Stack(
       children: [
@@ -285,8 +292,9 @@ class _VideoCardState extends State<VideoCard> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min, // Wrap content
                       children: [
-                        Icon(Icons.storefront,
-                            color: Colors.white), // Shop icon
+                        Image.asset(
+                          "assets/icons/shop.png",
+                        ), // Shop icon
                         SizedBox(width: 4),
                         Text("Shop",
                             style: GoogleFonts.montserrat(
@@ -445,53 +453,118 @@ class _VideoCardState extends State<VideoCard> {
                       ],
                     ),
                   ),
-                SizedBox(height: 8),
+                SizedBox(height: 16),
                 Text("Username",
                     style: GoogleFonts.montserrat(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     )),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(
-                              color: Colors.white), // Style for the text
+                SizedBox(
+                  height: 16,
+                ),
+                Container(
+                  width: 350,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            TextSpan(
-                              text: isExpanded
-                                  ? widget.text // Full text when expanded
-                                  : widget.text.length > textLimit
-                                      ? widget.text.substring(0, textLimit) +
-                                          "..." // Truncated text
-                                      : widget
-                                          .text, // Full text if it fits within the limit
-                            ),
-                            if (widget.text.length > textLimit)
-                              WidgetSpan(
-                                alignment: PlaceholderAlignment
-                                    .middle, // Align with text
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      isExpanded =
-                                          !isExpanded; // Toggle expanded state
-                                    });
-                                  },
-                                  child: Text(
-                                    isExpanded ? " see less" : " see more",
-                                    style: TextStyle(color: Colors.blue),
+                            Text.rich(
+                              TextSpan(
+                                style: TextStyle(
+                                    color: Colors.white), // Style for the text
+                                children: [
+                                  TextSpan(
+                                    text: isExpanded
+                                        ? widget.text // Full text when expanded
+                                        : widget.text.length > textLimit
+                                            ? widget.text
+                                                    .substring(0, textLimit) +
+                                                "..." // Truncated text
+                                            : widget
+                                                .text, // Full text if it fits within the limit
                                   ),
-                                ),
+                                  if (widget.text.length > textLimit)
+                                    TextSpan(
+                                      text: isExpanded
+                                          ? " see less"
+                                          : " see more",
+                                      style: GoogleFonts.montserrat(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          setState(() {
+                                            isExpanded = !isExpanded;
+                                          });
+                                        },
+                                    ),
+                                ],
                               ),
+                              maxLines: 5,
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                SizedBox(
+                    height: 20), // Space between description and music/effect
+                // Music and Effect UI
+                Row(
+                  children: [
+                    // Music
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF1A1A1A),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child: Row(
+                        children: [
+                          Image.asset("assets/icons/music.png"),
+                          SizedBox(width: 4),
+                          Text(
+                            "Falz • How Many (fe...",
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 8), // Space between Music and Effect
+                    // Effect
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF1A1A1A),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child: Row(
+                        children: [
+                          Image.asset("assets/icons/magicpen.png"),
+                          SizedBox(width: 4),
+                          Text(
+                            "Effect Name",
+                            style: GoogleFonts.montserrat(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                )
               ],
             ),
           ),
