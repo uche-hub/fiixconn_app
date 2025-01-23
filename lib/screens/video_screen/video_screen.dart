@@ -1,3 +1,4 @@
+import 'package:fiixconn_social_app/screens/Mini%20App/mini_app.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,6 +44,30 @@ class _VideoPageState extends State<VideoPage> {
           'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
     },
   ];
+
+  int _selectedIndex = 0; // To track the selected bottom navigation item
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      // Navigate to MiniApp screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MiniAppsScreen()),
+      );
+    } else {
+      // Handle other tabs (Messages, Notifications, etc.)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Feature coming soon!"),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +124,12 @@ class _VideoPageState extends State<VideoPage> {
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
+        onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
-              icon: Image.asset("assets/icons/layer.png"), label: "Mini Apps"),
+            icon: Image.asset("assets/icons/layer.png"),
+            label: "Mini Apps",
+          ),
           BottomNavigationBarItem(
               icon: Image.asset("assets/icons/chat-1.png"), label: "Messages"),
           BottomNavigationBarItem(
@@ -132,7 +160,10 @@ class VideoCard extends StatefulWidget {
   final String videoUrl;
   final String text; // Add text property
 
-  VideoCard({required this.videoUrl, required this.text});
+  VideoCard({
+    required this.videoUrl,
+    required this.text,
+  });
 
   @override
   _VideoCardState createState() => _VideoCardState();
@@ -144,6 +175,7 @@ class _VideoCardState extends State<VideoCard> {
   bool _showHeart = false; // Flag for showing the heart animation
   int _likeCount = 1200; // Initial like count
   bool _showDropdown = false; // Dropdown visibility toggle
+  String username = "kaizen_designer";
 
   bool isExpanded = false;
 
@@ -233,8 +265,8 @@ class _VideoCardState extends State<VideoCard> {
                 ),
                 SizedBox(height: 20),
                 Icon(
-                  Icons.favorite_outline,
-                  color: Colors.white,
+                  _showHeart ? Icons.favorite : Icons.favorite_outline,
+                  color: _showHeart ? Colors.red : Colors.white,
                   size: 40,
                 ),
                 Text("$_likeCount",
@@ -454,7 +486,7 @@ class _VideoCardState extends State<VideoCard> {
                     ),
                   ),
                 SizedBox(height: 16),
-                Text("Username",
+                Text(username,
                     style: GoogleFonts.montserrat(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

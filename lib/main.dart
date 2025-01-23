@@ -1,4 +1,5 @@
 
+import 'package:fiixconn_social_app/screens/Mini%20App/mini_app.dart';
 import 'package:fiixconn_social_app/screens/splash%20screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
