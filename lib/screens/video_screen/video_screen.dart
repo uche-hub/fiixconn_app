@@ -15,36 +15,37 @@ class _VideoPageState extends State<VideoPage> {
   final List<Map<String, String>> externalVideos = [
     {
       'url':
-          'http://videos.pexels.com/video-files/4057322/4057322-sd_506_960_25fps.mp4',
+          'https://videos.pexels.com/video-files/4057322/4057322-sd_506_960_25fps.mp4',
       'text':
           'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
     },
     {
       'url':
-          'http://videos.pexels.com/video-files/4058084/4058084-sd_506_960_25fps.mp4',
+          'https://videos.pexels.com/video-files/4058084/4058084-sd_506_960_25fps.mp4',
       'text':
           'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
     },
     {
       'url':
-          'http://videos.pexels.com/video-files/3959544/3959544-sd_506_960_25fps.mp4',
+          'https://videos.pexels.com/video-files/3959544/3959544-sd_506_960_25fps.mp4',
       'text':
           'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
     },
     {
       'url':
-          'http://videos.pexels.com/video-files/4038571/4038571-sd_506_960_25fps.mp4',
+          'https://videos.pexels.com/video-files/4038571/4038571-sd_506_960_25fps.mp4',
       'text':
           'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
     },
     {
       'url':
-          'http://videos.pexels.com/video-files/5595352/5595352-sd_360_640_24fps.mp4',
+          'https://videos.pexels.com/video-files/5595352/5595352-sd_360_640_24fps.mp4',
       'text':
           'The ancient forest stretched endlessly across the horizon, its towering trees cloaked in emerald-green moss and tangled vines that shimmered faintly with the morning dew.',
     },
   ];
 
+  // ignore: unused_field
   int _selectedIndex = 0; // To track the selected bottom navigation item
 
   void _onItemTapped(int index) {
@@ -179,6 +180,13 @@ class _VideoCardState extends State<VideoCard> {
 
   bool isExpanded = false;
 
+  // Toggle the dropdown visibility
+  void _toggleDropdown() {
+    setState(() {
+      _showDropdown = !_showDropdown;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -306,12 +314,7 @@ class _VideoCardState extends State<VideoCard> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    // Toggle dropdown visibility
-                    setState(() {
-                      _showDropdown = !_showDropdown;
-                    });
-                  },
+                  onTap: _toggleDropdown,
                   child: Container(
                     decoration: BoxDecoration(
                       color: Color(0xFF1A1A1A), // Background color

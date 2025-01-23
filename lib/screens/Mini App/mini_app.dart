@@ -45,24 +45,31 @@ class _MiniAppsScreen extends State<MiniAppsScreen> {
                           radius: 20, // Adjust size as needed
                           backgroundColor:
                               Colors.transparent, // No background color
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(
+                                  context); // Goes back to the previous page
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isDarkTheme
+                                      ? Colors.white
+                                      : Colors.black, // Border color
+                                  width: 2, // Border thickness
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.arrow_back,
                                 color: isDarkTheme
                                     ? Colors.white
-                                    : Colors.black, // Border color
-                                width: 2, // Border thickness
+                                    : Colors.black, // Icon color
                               ),
-                            ),
-                            child: Icon(
-                              Icons.arrow_back,
-                              color: isDarkTheme
-                                  ? Colors.white
-                                  : Colors.black, // Icon color
                             ),
                           ),
                         ),
+
                         // Title
                         Text(
                           "Mini Apps",
